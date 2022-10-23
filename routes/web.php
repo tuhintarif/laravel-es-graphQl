@@ -1,5 +1,6 @@
 <?php
 
+use Elastic\Elasticsearch\ClientBuilder;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,29 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/es', function () {
+    $client = ClientBuilder::create()
+        ->setHosts(['elasticsearch:9200'])
+        ->build();
+
+    dump($client->info());
+});
+
+Route::get('/es/{name}/{age}', function($name , $age){
+    $client = ClientBuilder::create()
+        ->setHosts(['elasticsearch:9200'])
+        ->build();
+
+    $param = [
+        'index' => 'test-es',
+        'body' => [
+            'name' => $name,
+            'age' => $age,
+        ]
+    ];
+    $result = $client->index($param);
+    dump($param);
+
 });
