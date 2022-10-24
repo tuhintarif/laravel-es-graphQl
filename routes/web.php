@@ -18,6 +18,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/test/{name}', [\App\Http\Controllers\ElasticsearchController::class, 'find']);
+
 Route::get('/es', function () {
     $client = ClientBuilder::create()
         ->setHosts(['elasticsearch:9200'])
@@ -26,10 +28,10 @@ Route::get('/es', function () {
     dump($client->info());
 });
 
-Route::get('/es/{name}/{age}', function($name , $age){
-    $client = ClientBuilder::create()
-        ->setHosts(['elasticsearch:9200'])
-        ->build();
+Route::get('/es/{name}/{age}', function($name , $age, \Elastic\Elasticsearch\Client $client){
+//    $client = ClientBuilder::create()
+//        ->setHosts(['elasticsearch:9200'])
+//        ->build();
 
     $param = [
         'index' => 'test-es',
@@ -39,6 +41,6 @@ Route::get('/es/{name}/{age}', function($name , $age){
         ]
     ];
     $result = $client->index($param);
-    dump($param);
+    dump($result);
 
 });
